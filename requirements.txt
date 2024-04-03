@@ -1,11 +1,6 @@
-faicons
-palmerpenguins
-pandas
-pyarrow
-plotly
-seaborn
-shiny
-shinylive
+faicons 
+pandas 
+plotly 
+scipy
+shiny 
 shinywidgets
-favicon
-shinyswatch
