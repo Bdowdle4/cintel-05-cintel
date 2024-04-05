@@ -24,7 +24,7 @@ UPDATE_INTERVAL_SECS: int = 30
 # Used by all the display components that show this live data.
 # This reactive value is a wrapper around a DEQUE of readings
 
-DEQUE_SIZE: int = 5
+DEQUE_SIZE: int = 6
 reactive_value_wrapper = reactive.value(deque(maxlen=DEQUE_SIZE))
 
 # Initialize a REACTIVE CALC that all display components can call to get the latest data and display it.
@@ -76,10 +76,11 @@ with ui.sidebar(open="open"):
     )
     ui.p(
         "Winter frost in the morning, Summer sun before lunch, Spring showers in the afternoon, and crispy Fall breeze into the evening.",
-        class_="text-center",
+        class_="text-center", style="background-color: lightblue; color: black",
     )
     ui.hr()
-    ui.h6("Important Links:")
+    ui.h6("Important Links:",
+         style="text-decoration:underline")
     ui.a(
         "GitHub Repo",
         href="https://github.com/Bdowdle4/cintel-05-cintel",
@@ -100,7 +101,7 @@ with ui.sidebar(open="open"):
 with ui.layout_columns(row_heights=["auto"], fill=True):
     with ui.value_box(
         showcase=icon_svg("tornado"),
-        theme="bg-gradient-red-green",
+        theme="bg-gradient-red-purple",
         style="color: black;",
     ):
         "Current Temperature"
@@ -113,10 +114,10 @@ with ui.layout_columns(row_heights=["auto"], fill=True):
 
         "Is this normal?"
 
-    with ui.card(full_screen=True):
+    with ui.card(full_screen=True, style="background-color: lightcyan"):
         ui.card_header(
             "Current Date and Time 📅",
-            style="background-color: green; color: lightblue;",
+            style="background-color: green; color: white;",
         )
 
         @render.text
@@ -127,10 +128,10 @@ with ui.layout_columns(row_heights=["auto"], fill=True):
 
 
 # with ui.card(full_screen=True, min_height="60%"):
-with ui.navset_card_pill(id="tab1"):
+with ui.navset_card_tab(id="tab1"):
     with ui.nav_panel("Table"):
         with ui.card(
-            full_screen=True, style="background-color: lightblue;", height="300px"
+            full_screen=True, style="background-color: lightcyan;", height="300px"
         ):
             ui.card_header(
                 "Most Recent Readings ⏰", style="background-color: green; color: white;"
@@ -145,7 +146,7 @@ with ui.navset_card_pill(id="tab1"):
 
     with ui.nav_panel("Graph"):
         with ui.card(
-            full_screen=True, style="background-color: lightblue;", height="600px"
+            full_screen=True, style="background-color: lightcyan;", height="600px"
         ):
             ui.card_header(
                 "Current Trend 🌡️", style="background-color: green; color: white;"
