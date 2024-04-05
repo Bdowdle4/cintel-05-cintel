@@ -1,6 +1,6 @@
 # Imports at the top - PyShiny EXPRESS VERSION
 from shiny import reactive, render
-from shiny.express import ui
+from shiny.express import ui, input
 import random
 from datetime import datetime
 from collections import deque
@@ -8,10 +8,13 @@ import pandas as pd
 import plotly.express as px
 from shinywidgets import render_plotly
 from scipy import stats
+from shinyswatch import theme
 
 # Import icons as you like
 # https://fontawesome.com/v4/cheatsheet/
 from faicons import icon_svg
+
+theme.flatly
 
 # First, set a constant UPDATE INTERVAL for all live data
 # Constants are usually defined in uppercase letters
@@ -68,7 +71,7 @@ ui.page_opts(
 
 # Note the with statement to create the sidebar followed by a colon
 # Everything in the sidebar is indented consistently
-with ui.sidebar(open="open"):
+with ui.sidebar(open="open", style="background-color: lightgreen; color: black"):
     ui.h2(
         "Which seasons will we see today?",
         style="font-weight:bold",
@@ -76,7 +79,7 @@ with ui.sidebar(open="open"):
     )
     ui.p(
         "Winter frost in the morning, Summer sun before lunch, Spring showers in the afternoon, and crispy Fall breeze into the evening.",
-        class_="text-center", style="background-color: lightblue; color: black",
+        class_="text-center",
     )
     ui.hr()
     ui.h6("Important Links:",
@@ -97,11 +100,15 @@ with ui.sidebar(open="open"):
         target="_blank",
     )
 
+
+    # Create radio buttons for dark or light mode
+    ui.input_radio_buttons("dark_mode", "Dark Mode:", ["Yes", "No"], selected="Yes")
+    
 # In Shiny Express, everything not in the sidebar is in the main panel
 with ui.layout_columns(row_heights=["auto"], fill=True):
     with ui.value_box(
         showcase=icon_svg("tornado"),
-        theme="bg-gradient-red-purple",
+        theme="bg-gradient-red-orange",
         style="color: black;",
     ):
         "Current Temperature"
@@ -114,7 +121,7 @@ with ui.layout_columns(row_heights=["auto"], fill=True):
 
         "Is this normal?"
 
-    with ui.card(full_screen=True, style="background-color: lightcyan"):
+    with ui.card(full_screen=True):
         ui.card_header(
             "Current Date and Time 📅",
             style="background-color: green; color: white;",
@@ -126,17 +133,18 @@ with ui.layout_columns(row_heights=["auto"], fill=True):
             deque_snapshot, df, latest_dictionary_entry = reactive_calc_combined()
             return f"{latest_dictionary_entry['timestamp']} CST"
 
+        "Central Standard Time"
+
 
 # with ui.card(full_screen=True, min_height="60%"):
 with ui.navset_card_tab(id="tab1"):
     with ui.nav_panel("Table"):
         with ui.card(
-            full_screen=True, style="background-color: lightcyan;", height="300px"
+            full_screen=True,height="300px"
         ):
             ui.card_header(
                 "Most Recent Readings ⏰", style="background-color: green; color: white;"
             )
-
             @render.data_frame
             def display_df():
                 """Get the latest reading and return a dataframe with current readings"""
@@ -146,7 +154,7 @@ with ui.navset_card_tab(id="tab1"):
 
     with ui.nav_panel("Graph"):
         with ui.card(
-            full_screen=True, style="background-color: lightcyan;", height="600px"
+            full_screen=True, height="600px"
         ):
             ui.card_header(
                 "Current Trend 🌡️", style="background-color: green; color: white;"
@@ -203,3 +211,11 @@ with ui.navset_card_tab(id="tab1"):
                     )
 
                     return fig
+
+# Reactive effect to make dark mode buttons work
+@reactive.effect
+def _():
+    if input.dark_mode() == "Yes":
+        ui.update_dark_mode("dark")
+    else:
+        ui.update_dark_mode("light")
